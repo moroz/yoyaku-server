@@ -30,14 +30,9 @@ defmodule YoyakuWeb.UserSessionControllerTest do
         })
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
 
-      # Now do a logged in request and assert on the menu
       conn = get(conn, "/")
-      response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ "Settings</a>"
-      assert response =~ "Log out</a>"
+      response = text_response(conn, 201)
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
@@ -51,21 +46,7 @@ defmodule YoyakuWeb.UserSessionControllerTest do
         })
 
       assert conn.resp_cookies["_yoyaku_web_user_remember_me"]
-      assert redirected_to(conn) == "/"
-    end
-
-    test "logs the user in with return to", %{conn: conn, user: user} do
-      conn =
-        conn
-        |> init_test_session(user_return_to: "/foo/bar")
-        |> post(Routes.user_session_path(conn, :create), %{
-          "user" => %{
-            "email" => user.email,
-            "password" => valid_user_password()
-          }
-        })
-
-      assert redirected_to(conn) == "/foo/bar"
+      assert conn.status == 201
     end
 
     test "emits error message with invalid credentials", %{conn: conn, user: user} do
@@ -74,9 +55,9 @@ defmodule YoyakuWeb.UserSessionControllerTest do
           "user" => %{"email" => user.email, "password" => "invalid_password"}
         })
 
-      response = html_response(conn, 200)
-      assert response =~ "<h1>Log in</h1>"
-      assert response =~ "Invalid email or password"
+      response = json_response(conn, 401)
+      assert %{"error" => error} = response
+      assert error =~ "Invalid email or password"
     end
   end
 
