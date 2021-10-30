@@ -17,15 +17,12 @@ defmodule YoyakuWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", YoyakuWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-  end
-
   # Other scopes may use custom stacks.
-  scope "/api", YoyakuWeb do
+  scope "/api" do
     pipe_through :api
+
+    get "/graphql", Absinthe.Plug.GraphiQL, schema: YoyakuWeb.Api.Schema, interface: :playground
+    post "/graphql", Absinthe.Plug, schema: YoyakuWeb.Api.Schema
   end
 
   # Enables LiveDashboard only for development
