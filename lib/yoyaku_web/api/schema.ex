@@ -9,6 +9,7 @@ defmodule YoyakuWeb.Api.Schema do
 
   query do
     import_fields(:slot_queries)
+    import_fields(:user_queries)
   end
 
   mutation do

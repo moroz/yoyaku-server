@@ -72,14 +72,9 @@ defmodule YoyakuWeb.UserAuth do
     user_token = get_session(conn, :user_token)
     user_token && Accounts.delete_session_token(user_token)
 
-    if live_socket_id = get_session(conn, :live_socket_id) do
-      YoyakuWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
-    end
-
     conn
     |> renew_session()
     |> delete_resp_cookie(@remember_me_cookie)
-    |> redirect(to: "/")
   end
 
   @doc """
@@ -89,7 +84,10 @@ defmodule YoyakuWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
-    assign(conn, :current_user, user)
+
+    conn
+    |> assign(:current_user, user)
+    |> Absinthe.Plug.put_options(context: %{current_user: user})
   end
 
   defp ensure_user_token(conn) do

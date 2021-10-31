@@ -18,6 +18,12 @@ defmodule YoyakuWeb.Api.Types.Users do
     field :data, :user
   end
 
+  object :user_queries do
+    field :current_user, :user do
+      resolve(&UserResolvers.current_user/2)
+    end
+  end
+
   object :user_mutations do
     field :create_user, non_null(:user_mutation_result) do
       arg(:params, non_null(:user_params))

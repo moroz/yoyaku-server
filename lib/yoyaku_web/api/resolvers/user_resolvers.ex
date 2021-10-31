@@ -6,4 +6,8 @@ defmodule YoyakuWeb.Api.Resolvers.UserResolvers do
       {:ok, %{success: true, data: user}}
     end
   end
+
+  def current_user(_, %{context: %{current_user: user}}) do
+    {:ok, user}
+  end
 end
