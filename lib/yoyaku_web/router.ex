@@ -15,6 +15,7 @@ defmodule YoyakuWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   # Other scopes may use custom stacks.
@@ -23,6 +24,7 @@ defmodule YoyakuWeb.Router do
 
     get "/graphql", Absinthe.Plug.GraphiQL, schema: YoyakuWeb.Api.Schema, interface: :playground
     post "/graphql", Absinthe.Plug, schema: YoyakuWeb.Api.Schema
+    post "/users/log_in", YoyakuWeb.UserSessionController, :create
   end
 
   # Enables LiveDashboard only for development

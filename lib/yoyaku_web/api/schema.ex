@@ -5,6 +5,7 @@ defmodule YoyakuWeb.Api.Schema do
   import_types(YoyakuWeb.Api.Types.Slots)
   import_types(YoyakuWeb.Api.Types.Reservations)
   import_types(YoyakuWeb.Api.Types.JSON)
+  import_types(YoyakuWeb.Api.Types.Users)
 
   query do
     import_fields(:slot_queries)
@@ -12,6 +13,8 @@ defmodule YoyakuWeb.Api.Schema do
 
   mutation do
     import_fields(:slot_mutations)
+    import_fields(:reservation_mutations)
+    import_fields(:user_mutations)
   end
 
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: :mutation}) do

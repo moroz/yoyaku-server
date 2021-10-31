@@ -2,7 +2,7 @@ defmodule Yoyaku.Booking.Reservation do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @required ~w(email first_name last_name phone_no)a
+  @required ~w(email first_name last_name phone_no slot_id)a
   @cast @required ++ [:confirmed_at]
 
   schema "reservations" do

@@ -8,17 +8,17 @@ defmodule YoyakuWeb.UserSessionController do
     render(conn, "new.html", error_message: nil)
   end
 
-  def create(conn, %{"user" => user_params}) do
-    %{"email" => email, "password" => password} = user_params
+  def create(conn, params) do
+    %{"email" => email, "password" => password} = params
 
     if user = Accounts.get_user_by_email_and_password(email, password) do
       conn
-      |> UserAuth.log_in_user(user, user_params)
-      |> send_resp(201, "OK")
+      |> UserAuth.log_in_user(user, params)
+      |> json(%{status: "OK", error: nil})
     else
       conn
       |> put_status(401)
-      |> json(%{error: "Invalid email or password"})
+      |> json(%{status: "ERROR", error: "Invalid email or password"})
     end
   end
 
