@@ -1,6 +1,7 @@
 defmodule YoyakuWeb.Api.Types.Slots do
   use Absinthe.Schema.Notation
   import YoyakuWeb.Macros
+  import YoyakuWeb.Api.Middleware.LazyPreload
   alias YoyakuWeb.Api.Resolvers.SlotResolvers
 
   object :slot do
@@ -8,6 +9,10 @@ defmodule YoyakuWeb.Api.Types.Slots do
     field :start_time, non_null(:datetime)
     field :end_time, non_null(:datetime)
     field :capacity, non_null(:integer)
+
+    field :reservations, non_null(list_of(non_null(:reservation))) do
+      lazy_preload(:reservations)
+    end
 
     timestamps()
   end

@@ -51,7 +51,8 @@ defmodule Yoyaku.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:absinthe, "~> 1.6"},
       {:absinthe_plug, "~> 1.5"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:email_tld_validator, "~> 0.1"}
     ]
   end
 

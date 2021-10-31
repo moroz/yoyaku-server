@@ -3,6 +3,7 @@ defmodule YoyakuWeb.Api.Schema do
 
   import_types(Absinthe.Type.Custom)
   import_types(YoyakuWeb.Api.Types.Slots)
+  import_types(YoyakuWeb.Api.Types.Reservations)
   import_types(YoyakuWeb.Api.Types.JSON)
 
   query do

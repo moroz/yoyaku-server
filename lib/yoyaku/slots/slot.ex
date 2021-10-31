@@ -6,6 +6,7 @@ defmodule Yoyaku.Slots.Slot do
     field :capacity, :integer
     field :end_time, :utc_datetime
     field :start_time, :utc_datetime
+    has_many :reservations, Yoyaku.Booking.Reservation
 
     timestamps(type: :utc_datetime)
   end
