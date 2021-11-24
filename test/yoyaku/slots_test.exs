@@ -3,10 +3,12 @@ defmodule Yoyaku.SlotsTest do
 
   alias Yoyaku.Slots
 
+  def slot_fixture(opts \\ %{}) do
+    insert(:slot, opts) |> Repo.reload!()
+  end
+
   describe "slots" do
     alias Yoyaku.Slots.Slot
-
-    import Yoyaku.SlotsFixtures
 
     @invalid_attrs %{capacity: nil, end_time: nil, start_time: nil}
 
@@ -21,12 +23,12 @@ defmodule Yoyaku.SlotsTest do
     end
 
     test "create_slot/1 with valid data creates a slot" do
-      valid_attrs = %{capacity: 42, end_time: ~N[2021-10-29 20:13:00], start_time: ~N[2021-10-29 20:13:00]}
+      valid_attrs = params_for(:slot)
 
       assert {:ok, %Slot{} = slot} = Slots.create_slot(valid_attrs)
-      assert slot.capacity == 42
-      assert slot.end_time == ~N[2021-10-29 20:13:00]
-      assert slot.start_time == ~N[2021-10-29 20:13:00]
+      assert slot.capacity == valid_attrs.capacity
+      assert slot.end_time == valid_attrs.end_time
+      assert slot.start_time == valid_attrs.start_time
     end
 
     test "create_slot/1 with invalid data returns error changeset" do
@@ -35,12 +37,17 @@ defmodule Yoyaku.SlotsTest do
 
     test "update_slot/2 with valid data updates the slot" do
       slot = slot_fixture()
-      update_attrs = %{capacity: 43, end_time: ~N[2021-10-30 20:13:00], start_time: ~N[2021-10-30 20:13:00]}
+
+      update_attrs = %{
+        capacity: 43,
+        end_time: ~U[2021-10-30 21:13:00Z],
+        start_time: ~U[2021-10-30 20:13:00Z]
+      }
 
       assert {:ok, %Slot{} = slot} = Slots.update_slot(slot, update_attrs)
       assert slot.capacity == 43
-      assert slot.end_time == ~N[2021-10-30 20:13:00]
-      assert slot.start_time == ~N[2021-10-30 20:13:00]
+      assert slot.end_time == update_attrs.end_time
+      assert slot.start_time == update_attrs.start_time
     end
 
     test "update_slot/2 with invalid data returns error changeset" do

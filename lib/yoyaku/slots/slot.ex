@@ -20,5 +20,17 @@ defmodule Yoyaku.Slots.Slot do
       name: :slots_exclusion,
       message: "Slot times overlap with another record"
     )
+    |> validate_end_time_after_start_time()
+  end
+
+  defp validate_end_time_after_start_time(changeset) do
+    start_time = get_change(changeset, :start_time)
+    end_time = get_change(changeset, :end_time)
+
+    if start_time && end_time && Timex.after?(start_time, end_time) do
+      add_error(changeset, :end_time, "must be after start time")
+    else
+      changeset
+    end
   end
 end

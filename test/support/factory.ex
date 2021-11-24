@@ -2,7 +2,7 @@ defmodule Yoyaku.Factory do
   use ExMachina.Ecto, repo: Yoyaku.Repo
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
-  def valid_user_password, do: "hello world!"
+  def valid_user_password, do: "o$85To&qqoqWP3ro#Pir"
 
   def phone_no do
     sequence(:phone_no, fn n ->
@@ -12,7 +12,7 @@ defmodule Yoyaku.Factory do
   end
 
   def slot_factory do
-    start_time = Timex.now() |> Timex.shift(days: 3)
+    start_time = Timex.now() |> Timex.shift(days: 3) |> DateTime.truncate(:second)
     end_time = start_time |> Timex.shift(minutes: 30)
 
     %Yoyaku.Slots.Slot{
@@ -39,7 +39,6 @@ defmodule Yoyaku.Factory do
     %Yoyaku.Accounts.User{
       email: unique_user_email(),
       hashed_password: @password_hash,
-      confirmed_at: Timex.now(),
       password: valid_user_password()
     }
   end

@@ -147,7 +147,8 @@ defmodule Yoyaku.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, valid_user_password(), %{email: "not valid"})
 
-      assert %{email: ["must have the @ sign and no spaces"]} = errors_on(changeset)
+      assert %{email: [actual_error]} = errors_on(changeset)
+      assert actual_error =~ ~r/valid/i
     end
 
     test "validates maximum value for email for security", %{user: user} do
