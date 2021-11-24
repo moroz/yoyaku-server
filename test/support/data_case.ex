@@ -24,6 +24,7 @@ defmodule Yoyaku.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Yoyaku.DataCase
+      import Yoyaku.Factory
     end
   end
 

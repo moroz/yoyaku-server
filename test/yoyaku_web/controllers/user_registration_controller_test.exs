@@ -1,8 +1,6 @@
 defmodule YoyakuWeb.UserRegistrationControllerTest do
   use YoyakuWeb.ConnCase, async: true
 
-  import Yoyaku.AccountsFixtures
-
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
@@ -13,7 +11,7 @@ defmodule YoyakuWeb.UserRegistrationControllerTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
-      conn = conn |> log_in_user(user_fixture()) |> get(Routes.user_registration_path(conn, :new))
+      conn = conn |> log_in_user(insert(:user)) |> get(Routes.user_registration_path(conn, :new))
       assert redirected_to(conn) == "/"
     end
   end
@@ -25,7 +23,7 @@ defmodule YoyakuWeb.UserRegistrationControllerTest do
 
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => valid_user_attributes(email: email)
+          "user" => params_for(:user, email: email)
         })
 
       assert get_session(conn, :user_token)

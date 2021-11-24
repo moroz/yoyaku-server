@@ -52,7 +52,9 @@ defmodule Yoyaku.MixProject do
       {:absinthe, "~> 1.6"},
       {:absinthe_plug, "~> 1.5"},
       {:cors_plug, "~> 2.0"},
-      {:email_tld_validator, "~> 0.1"}
+      {:email_tld_validator, "~> 0.1"},
+      {:ex_machina, "~> 2.7"},
+      {:timex, "~> 3.7"}
     ]
   end
 

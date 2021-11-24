@@ -3,7 +3,6 @@ defmodule YoyakuWeb.UserAuthTest do
 
   alias Yoyaku.Accounts
   alias YoyakuWeb.UserAuth
-  import Yoyaku.AccountsFixtures
 
   @remember_me_cookie "_yoyaku_web_user_remember_me"
 
@@ -13,7 +12,7 @@ defmodule YoyakuWeb.UserAuthTest do
       |> Map.replace!(:secret_key_base, YoyakuWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{user: insert(:user), conn: conn}
   end
 
   describe "log_in_user/3" do

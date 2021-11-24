@@ -1,10 +1,8 @@
 defmodule YoyakuWeb.UserSessionControllerTest do
   use YoyakuWeb.ConnCase, async: true
 
-  import Yoyaku.AccountsFixtures
-
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "POST /users/log_in" do

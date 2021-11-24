@@ -3,8 +3,17 @@ defmodule Yoyaku.AccountsTest do
 
   alias Yoyaku.Accounts
 
-  import Yoyaku.AccountsFixtures
   alias Yoyaku.Accounts.{User, UserToken}
+
+  def user_fixture(opts \\ []) do
+    insert(:user, opts)
+  end
+
+  def extract_user_token(fun) do
+    {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
+    [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
+    token
+  end
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -86,7 +95,7 @@ defmodule Yoyaku.AccountsTest do
 
     test "registers users with a hashed password" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      {:ok, user} = Accounts.register_user(params_for(:user, email: email))
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -107,7 +116,7 @@ defmodule Yoyaku.AccountsTest do
       changeset =
         Accounts.change_user_registration(
           %User{},
-          valid_user_attributes(email: email, password: password)
+          params_for(:user, email: email, password: password)
         )
 
       assert changeset.valid?

@@ -23,6 +23,7 @@ defmodule YoyakuWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import YoyakuWeb.ConnCase
+      import Yoyaku.Factory
 
       alias YoyakuWeb.Router.Helpers, as: Routes
 
