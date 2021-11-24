@@ -9,6 +9,8 @@ defmodule Yoyaku.AccountsTest do
     insert(:user, opts)
   end
 
+  @update_password "c1F4$iv59Z&OJAuhW#RR"
+
   def extract_user_token(fun) do
     {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
@@ -258,18 +260,18 @@ defmodule Yoyaku.AccountsTest do
     test "allows fields to be set" do
       changeset =
         Accounts.change_user_password(%User{}, %{
-          "password" => "new valid password"
+          "password" => @update_password
         })
 
       assert changeset.valid?
-      assert get_change(changeset, :password) == "new valid password"
+      assert get_change(changeset, :password) == @update_password
       assert is_nil(get_change(changeset, :hashed_password))
     end
   end
 
   describe "update_user_password/3" do
     setup do
-      %{user: user_fixture()}
+      %{user: user_fixture(password: nil)}
     end
 
     test "validates password", %{user: user} do
@@ -280,9 +282,11 @@ defmodule Yoyaku.AccountsTest do
         })
 
       assert %{
-               password: ["should be at least 12 character(s)"],
+               password: password_errors,
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
+
+      assert "should be at least 12 character(s)" in password_errors
     end
 
     test "validates maximum values for password for security", %{user: user} do
@@ -304,11 +308,11 @@ defmodule Yoyaku.AccountsTest do
     test "updates the password", %{user: user} do
       {:ok, user} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "new valid password"
+          password: @update_password
         })
 
       assert is_nil(user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, @update_password)
     end
 
     test "deletes all tokens for the given user", %{user: user} do
@@ -316,7 +320,7 @@ defmodule Yoyaku.AccountsTest do
 
       {:ok, _} =
         Accounts.update_user_password(user, valid_user_password(), %{
-          password: "new valid password"
+          password: @update_password
         })
 
       refute Repo.get_by(UserToken, user_id: user.id)
@@ -478,7 +482,7 @@ defmodule Yoyaku.AccountsTest do
 
   describe "reset_user_password/2" do
     setup do
-      %{user: user_fixture()}
+      %{user: user_fixture(password: nil)}
     end
 
     test "validates password", %{user: user} do
@@ -498,14 +502,14 @@ defmodule Yoyaku.AccountsTest do
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: @update_password})
       assert is_nil(updated_user.password)
-      assert Accounts.get_user_by_email_and_password(user.email, "new valid password")
+      assert Accounts.get_user_by_email_and_password(user.email, @update_password)
     end
 
     test "deletes all tokens for the given user", %{user: user} do
       _ = Accounts.generate_user_session_token(user)
-      {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, _} = Accounts.reset_user_password(user, %{password: @update_password})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
   end
