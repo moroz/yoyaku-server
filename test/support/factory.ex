@@ -1,8 +1,11 @@
 defmodule Yoyaku.Factory do
   use ExMachina.Ecto, repo: Yoyaku.Repo
 
+  @password "o$85To&qqoqWP3ro#Pir"
+  @password_hash Bcrypt.hash_pwd_salt(@password)
+
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
-  def valid_user_password, do: "o$85To&qqoqWP3ro#Pir"
+  def valid_user_password, do: @password
 
   def phone_no do
     sequence(:phone_no, fn n ->
@@ -32,8 +35,6 @@ defmodule Yoyaku.Factory do
       slot: build(:slot)
     }
   end
-
-  @password_hash Bcrypt.hash_pwd_salt("foobar")
 
   def user_factory do
     %Yoyaku.Accounts.User{

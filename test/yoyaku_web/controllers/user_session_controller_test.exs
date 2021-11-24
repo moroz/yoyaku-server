@@ -9,33 +9,31 @@ defmodule YoyakuWeb.UserSessionControllerTest do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
-          "user" => %{"email" => user.email, "password" => valid_user_password()}
+          "email" => user.email,
+          "password" => valid_user_password()
         })
 
       assert get_session(conn, :user_token)
-
-      conn = get(conn, "/")
-      response = response(conn, 201)
+      assert %{"status" => "OK"} = json_response(conn, 200)
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
-          "user" => %{
-            "email" => user.email,
-            "password" => valid_user_password(),
-            "remember_me" => "true"
-          }
+          "email" => user.email,
+          "password" => valid_user_password(),
+          "remember_me" => "true"
         })
 
       assert conn.resp_cookies["_yoyaku_web_user_remember_me"]
-      assert conn.status == 201
+      assert %{"status" => "OK"} = json_response(conn, 200)
     end
 
     test "emits error message with invalid credentials", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
-          "user" => %{"email" => user.email, "password" => "invalid_password"}
+          "email" => user.email,
+          "password" => "invalid_password"
         })
 
       response = json_response(conn, 401)
@@ -47,16 +45,14 @@ defmodule YoyakuWeb.UserSessionControllerTest do
   describe "DELETE /users/log_out" do
     test "logs the user out", %{conn: conn, user: user} do
       conn = conn |> log_in_user(user) |> delete(Routes.user_session_path(conn, :delete))
-      assert redirected_to(conn) == "/"
+      assert response(conn, 204)
       refute get_session(conn, :user_token)
-      assert get_flash(conn, :info) =~ "Logged out successfully"
     end
 
     test "succeeds even if the user is not logged in", %{conn: conn} do
       conn = delete(conn, Routes.user_session_path(conn, :delete))
-      assert redirected_to(conn) == "/"
+      assert response(conn, 204)
       refute get_session(conn, :user_token)
-      assert get_flash(conn, :info) =~ "Logged out successfully"
     end
   end
 end
